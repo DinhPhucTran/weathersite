@@ -1,0 +1,369 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <link href="/Content/bootstrap.css" rel="stylesheet" />
+    <link href="/Content/site.css" rel="stylesheet" />
+
+    <script src="/Scripts/modernizr-2.6.2.js"></script>
+
+    <link rel="stylesheet" href="/Content/jquery-ui.css" />
+
+    <style>
+        #map {
+            height: 400px;
+        }
+
+        h4.degrees {
+            font-size: 22px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .degrees:after {
+            content: "o";
+            position: relative;
+            top: -12px;
+            font-size: 13px;
+            font-weight: 300;
+        }
+
+        .daily-weather .day {
+            font-size: 14px;
+            border-top: 2px solid rgba(115, 135, 156, 0.36);
+            text-align: center;
+            border-bottom: 2px solid rgba(115, 135, 156, 0.36);
+            padding: 5px 0;
+        }
+
+        .weather-days .col-sm-2 {
+            overflow: hidden;
+            width: 16.66666667%;
+        }
+
+        .weather .row {
+            margin-bottom: 0;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Weather Channel</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Home/About">About</a></li>
+                    <li><a href="/Home/Contact">Contact</a></li>
+                </ul>
+                <!--<ul class="nav navbar-nav navbar-right">
+                    <li><a href="/Account/Register" id="registerLink">Register</a></li>
+                    <li><a href="/Account/Login" id="loginLink">Log in</a></li>
+                </ul>-->
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+
+        <!--<h2>Weather</h2>-->
+
+        <div>
+            <label for="location">Location</label>
+            <input id="location" type="text" class="form-control" />
+        </div>
+
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="weather-text">
+                            <h4 id="place" style="color:blue;">------ </h4>
+                            <h5 id="time"></h5>
+                            <span id="des-current">-----------</span>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-1" style="float: left;">
+                        <div>
+                            <div class="weather-text">
+                                <h1 class="degrees" id="temp-current">--</h1>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-sm-2" id="icon-wrapper">
+                        <canvas height="84" width="84" id="icon-current"></canvas>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="row" style="margin-right: 50px;">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+
+            <div id="map" class="col-md-4"></div>
+        </div>
+
+
+
+        <hr />
+        <footer>
+            <p>&copy; 2017 - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+
+    <script src="/Scripts/bootstrap.js"></script>
+    <script src="/Scripts/respond.js"></script>
+
+
+    <script src="/Scripts/jquery-ui.js"></script>
+    <script src="/Scripts/skycons.js"></script>
+    <script src="/Scripts/Chart.js"></script>
+    <script>
+        function drawChart(label, dt) {
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: label,
+                    datasets: [{
+                        label: 'Temperature',
+                        data: dt,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    hover: {
+                        // Overrides the global setting
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+    </script>
+    <script>
+        function isDayOrNight(hour) {
+            if (hour >= 6 && hour <= 18)
+                return "day";
+            return "night";
+        }
+        function getWeatherIcon(code) {
+            var isDay = true;
+            if (isDayOrNight((new Date()).getHours) == "day")
+                isDay = true;
+            else isDay = false;
+
+            if (code == 905) {
+                return Skycons.WIND;
+            }
+            if (code == 800) {
+                if(isDay == true)
+                    return Skycons.CLEAR_DAY;
+                return Skycons.CLEAR_NIGHT;
+            }
+            if (code == 801 || code == 803) {
+                if (isDay == true)
+                    return Skycons.PARTLY_CLOUDY_DAY;
+                else
+                    return Skycons.PARTLY_CLOUDY_NIGHT;
+            }
+            if (code == 802) {
+                return Skycons.CLOUDY;
+            }
+            if (code == 701 || code == 741) {
+                return Skycons.FOG;
+            }
+            if (code >= 611 && code <= 622) {
+                return Skycons.SLEET;
+            }
+            if (code >= 600 && code <= 602) {
+                return Skycons.SNOW;
+            }
+            if (code >= 300 && code <= 531) {
+                return Skycons.RAIN;
+            }
+        }
+        var skycons = new Skycons({ "color": "#73879C" });
+
+        $(document).ready(function () {
+            $("#time").text($.datepicker.formatDate('dd/mm/yy', new Date()));
+        });
+
+        $("#location").autocomplete({
+            source: function (request, response) {
+                var input = $("#location").val();
+                $.ajax({
+                    url: "/api/Weather/GetPlaceAutocomplete",
+                    dataType: "json",
+                    data: "input=" + input,
+                    success: function (data) {
+                        //console.log(data);
+                        var json = $.parseJSON(data);
+                        var pres = json['predictions'];
+                        response($.map(pres, function (el) {
+                            return {
+                                label: el.description,
+                                value: el.place_id
+                            };
+                        }));
+                    },
+                    error: function (e) {
+                        console.log("Autocomplete Error: " + e);
+                    }
+                });
+            },
+            select: function (event, ui) {
+                event.preventDefault();
+                $("#location").val(ui.item.label);
+                $("#place").text(ui.item.label);
+                addPlace(ui.item.value);
+                //console.log(ui.item.value);
+            },
+            autoFocus: true
+        });
+
+        function addPlace(placeId) {
+            $.ajax({
+                url: "/api/Weather/GetPlaceDetail",
+                dataType: "json",
+                data: "placeid=" + placeId,
+                success: function (data) {
+                    var json = $.parseJSON(data);
+                    var lat = json['result']['geometry']['location']['lat'];
+                    var lng = json['result']['geometry']['location']['lng'];
+                    addMarker(lat, lng);
+                    getCurrentWeather(lat, lng);
+                    getForecast(lat, lng);
+                }
+            });
+        }
+
+        function getCurrentWeather(lat, lng) {
+            $.ajax({
+                url: "/api/Weather/GetCurrent",
+                dataType: "json",
+                data: "lat=" + lat + "&lng=" + lng,
+                success: function (data) {
+                    $("#icon-wrapper").html("");
+                    $("#icon-wrapper").html("<canvas height='84' width='84' id='icon-current'></canvas>");
+
+                    var json = $.parseJSON(data);
+                    var main = json["weather"][0].main;
+                    var des = json["weather"][0].description;
+                    var icon = json["weather"][0].icon;
+                    var id = json["weather"][0].id;
+                    var temp = Math.ceil(json["main"].temp - 273.15);
+                    console.log("Current weather - Main: " + main + ", Des: " + des + ", ID: " + id);
+
+                    skycons.add("icon-current", getWeatherIcon(id));
+                    skycons.play();
+                    $("#des-current").text(des);
+                    $("#temp-current").text(temp);
+                    
+                }
+            });
+        }
+
+        function getForecast(lat, lng) {
+            $.ajax({
+                url: "/api/Weather/GetForecast",
+                dataType: "json",
+                data: "lat=" + lat + "&lng=" + lng,
+                success: function (data) {
+                    console.log(data);
+                    var json = $.parseJSON(data);
+
+                    var label = [];
+                    var data = [];
+
+                    for (i = 0; i < 9; i++) {
+                        data.push(Math.ceil(json["list"][i]["main"].temp - 273.15))
+                        label.push(json["list"][i].dt_txt);
+                    }
+
+                    drawChart(label, data);
+                },
+                error: function (e) {
+                    console.log("ERROR: " + e);
+                }
+            });
+        }
+
+
+    </script>
+
+    <script>
+        var map;
+        var markers = [];
+        function initMap() {
+            var uit = { lat: 10.870288, lng: 106.8024038 };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: uit
+            });
+        }
+
+        function setMapOnAll(map) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        function addMarker(lat, lng) {
+            setMapOnAll(null);
+            var pos = { lat: lat, lng: lng };
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map
+            });
+            map.setZoom(8);
+            map.setCenter(marker.getPosition());
+            markers.push(marker);
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgXEEd2QQBbpESV7DScrE_1DzObwWHhMo&callback=initMap">
+    </script>
+
+
+    <!-- Visual Studio Browser Link -->
+    <!--<script type="application/json" id="__browserLink_initializationData">
+        {"appName":"Chrome","requestId":"3a241211c9b34b85a04092818d20b6a4"}
+    </script>
+    <script type="text/javascript" src="http://localhost:52486/19af5b636a18432eb8339f69f19f4f94/browserLink" async="async"></script>-->
+    <!-- End Browser Link -->
+
+</body>
+</html>

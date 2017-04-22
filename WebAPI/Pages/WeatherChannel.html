@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Grayscale - Start Bootstrap Theme</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/Content/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="/Content/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!--<link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">-->
+    <!-- Theme CSS -->
+    <link href="/Content/css/style.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="/Scripts/html5shiv.js"></script>
+        <script src="/Scripts/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="/Content/css/select2.css" rel="stylesheet" />
+</head>
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+    <nav class="navbar navbar-fixed-top navbar-custom" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="#page-top">
+                <i class="fa fa-sun-o"></i> Weather <span class="light">Channel</span>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <!--<li class="active"><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>-->
+            </ul>
+            <div class="col-sm-3 col-md-3 pull-right">
+                <select id="location" style="width: 100%;" class="form-control"></select>
+                <!--<form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <select id="location"></select>
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>-->
+            </div>
+        </div>
+    </nav>
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body parallax-bg" data-background-image="/Content/images/background/cloudy-day.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <p class="intro-text" id="location-current"></p>
+                        <div style="text-align: center;">
+                            <div id="icon-wrapper"  style="display: inline-block;vertical-align:middle;">
+                                <canvas height="150" width="150" id="icon-current"></canvas>
+                            </div>                            
+                            <h2 style="display: inline-block;font-size:100px; vertical-align:middle;"><span id="temp-current">--</span>&deg;</h2>
+                        </div>
+                        <!-- <h1 class="brand-heading"><canvas height="150" width="150" id="icon-current"></canvas><span style="display: inline-block; padding-bottom: -20px;">25&deg;</span></h1> -->
+                        <p class="intro-text" id="des-current">------------</p>
+                        <a href="#map-section" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- About Section -->
+    <section id="map-section" class="container"  style="padding-left: 0px; margin-left: 0px; margin-right: 0px; padding-right: 0px;"> 
+        <div class="row">
+            <div class="col-md-6">
+                <div id="map" style="width: 100%; margin-top: 0px;"></div>
+            </div>
+
+            <div class="col-md-6" style="margin-top: 40px;">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </section>
+    <!-- Download Section -->
+    <section id="download" class="content-section text-center">
+        <div class="download-section">
+            <div class="container">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h2>Download Grayscale</h2>
+                    <p>You can download Grayscale for free on the preview page at Start Bootstrap.</p>
+                    <a href="http://startbootstrap.com/template-overviews/grayscale/" class="btn btn-default btn-lg">Visit Download Page</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="container content-section text-center">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h2>Contact Start Bootstrap</h2>
+                <p>Feel free to email us to provide some feedback on our templates, give us suggestions for new templates and themes, or to just say hello!</p>
+                <p>
+                    <a href="mailto:feedback@startbootstrap.com">feedback@startbootstrap.com</a>
+                </p>
+                <ul class="list-inline banner-social-buttons">
+                    <li>
+                        <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                    </li>
+                    <li>
+                        <a href="https://plus.google.com/+Startbootstrap/posts" class="btn btn-default btn-lg"><i class="fa fa-google-plus fa-fw"></i> <span class="network-name">Google+</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- Map Section -->
+    <div id="map"></div>
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; Your Website 2016</p>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="/Scripts/jquery-2.1.0.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/Scripts/bootstrap.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>-->
+    <!-- Theme JavaScript -->
+    <script src="/Scripts/grayscale.js"></script>
+
+    <script src="/Scripts/skycons.js"></script>
+
+    <script src="/Scripts/parallax.js"></script>
+
+    <script src="/Scripts/jquery-ui.js"></script>
+
+    <script src="/Scripts/select2.full.js"></script>
+
+    <script src="/Scripts/home.js"></script>
+
+    <script src="/Scripts/Chart.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgXEEd2QQBbpESV7DScrE_1DzObwWHhMo&callback=initMap"></script>
+</body>
+</html>
