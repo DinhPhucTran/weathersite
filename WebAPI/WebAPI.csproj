@@ -189,6 +189,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -212,6 +213,11 @@
     <Content Include="Content\images\background\sleet.jpg" />
     <Content Include="Content\images\background\snow.jpg" />
     <Content Include="Content\images\background\windy.jpg" />
+    <Content Include="Content\images\icon\cloud.png" />
+    <Content Include="Content\images\icon\humidity.png" />
+    <Content Include="Content\images\icon\rain.png" />
+    <Content Include="Content\images\icon\temperature.png" />
+    <Content Include="Content\images\icon\turbine.png" />
     <Content Include="Content\images\loading.gif" />
     <Content Include="Content\images\pattern.png" />
     <Content Include="Content\css\jquery-ui.css" />

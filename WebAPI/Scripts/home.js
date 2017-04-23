@@ -39,40 +39,35 @@ $(document).ready(function () {
         //console.log($("#location").val());        
         addPlace(($("#location").val()));
     });
-
-    //var skycons = new Skycons({ "color": "#FFFFFF" });
-
-    //skycons.add("icon-current", Skycons.CLEAR_NIGHT);
-    //skycons.play();
 });
 
 var map;
 var markers = [];
-function initMap() {
-    var uit = { lat: 10.870288, lng: 106.8024038 };
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
-        center: uit
-    });
-}
+//function initMap() {
+//    var uit = { lat: 10.870288, lng: 106.8024038 };
+//    map = new google.maps.Map(document.getElementById('map'), {
+//        zoom: 4,
+//        center: uit
+//    });
+//}
 
-function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-    }
-}
+//function setMapOnAll(map) {
+//    for (var i = 0; i < markers.length; i++) {
+//        markers[i].setMap(map);
+//    }
+//}
 
-function addMarker(lat, lng) {
-    setMapOnAll(null);
-    var pos = { lat: lat, lng: lng };
-    var marker = new google.maps.Marker({
-        position: pos,
-        map: map
-    });
-    map.setZoom(8);
-    map.setCenter(marker.getPosition());
-    markers.push(marker);
-}
+//function addMarker(lat, lng) {
+//    setMapOnAll(null);
+//    var pos = { lat: lat, lng: lng };
+//    var marker = new google.maps.Marker({
+//        position: pos,
+//        map: map
+//    });
+//    map.setZoom(8);
+//    map.setCenter(marker.getPosition());
+//    markers.push(marker);
+//}
 
 function isDayOrNight(hour) {
     if (hour >= 6 && hour <= 18)
@@ -118,38 +113,44 @@ function getWeatherIcon(code) {
 }
 
 function getIconAndBackground(code) {
-    var isDay = true;
-    if (isDayOrNight((new Date()).getHours) == "day")
-        isDay = true;
-    else isDay = false;
 
-    if (code == 905) {
+    if (code == "wind") {
         return { icon: Skycons.WIND, bg: "/Content/images/background/windy.jpg" };
     }
-    if (code == 800) {
-        if (isDay == true)
-            return Skycons.CLEAR_DAY;
-        return { icon: Skycons.CLEAR_NIGHT, bg: "/Content/images/background/clear-day.jpg" };
+
+    if (code == "clear-day") {
+        return { icon: Skycons.CLEAR_DAY, bg: "/Content/images/background/clear-day.jpg" };
     }
-    if (code == 801 || code == 803) {
-        if (isDay == true)
-            return { icon: Skycons.PARTLY_CLOUDY_DAY, bg: "/Content/images/background/cloudy-day.jpg" };
-        else
-            return { icon: Skycons.PARTLY_CLOUDY_NIGHT, bg: "/Content/images/background/cloudy-night.jpg" };
+
+    if (code == "clear-night") {
+        return {icon: Skycons.CLEAR_NIGHT, bg: "/Contetn/images/background/clear-night.jpg"}
     }
-    if (code == 802) {
+
+    if (code == "partly-cloudy-day") {
+        return { icon: Skycons.PARTLY_CLOUDY_DAY, bg: "/Content/images/background/cloudy-day.jpg" };
+    }
+
+    if (code == "partly-cloudy-night"){
+        return { icon: Skycons.PARTLY_CLOUDY_NIGHT, bg: "/Content/images/background/cloudy-night.jpg" };
+    }
+    
+    if (code == "cloudy") {
         return { icon: Skycons.CLOUDY, bg: "/Content/images/background/cloudy-day.jpg" };
     }
-    if (code == 701 || code == 741) {
+
+    if (code == "fog") {
         return { icon: Skycons.FOG, bg: "/Content/images/background/fog.jpg" };
     }
-    if (code >= 611 && code <= 622) {
+
+    if (code == "sleet") {
         return { icon: Skycons.SLEET, bg: "/Content/images/background/sleet.jpg" };
     }
-    if (code >= 600 && code <= 602) {
+
+    if (code == "snow") {
         return { icon: Skycons.SNOW, bg: "/Content/images/background/snow.jpg" };
     }
-    if (code >= 300 && code <= 531) {
+
+    if (code == "rain") {
         return { icon: Skycons.RAIN, bg: "/Content/images/background/rain.jpg" };
     }
 }
@@ -244,6 +245,44 @@ function getForecast(lat, lng) {
     });
 }
 
+function getWeather(lat, lng) {
+    $.ajax({
+        url: "/api/Weather/GetWeather",
+        dataType: "json",
+        data: "lat=" + lat + "&lng=" + lng,
+        success: function (data) {
+            $("#icon-wrapper").html("");
+            $("#icon-wrapper").html("<canvas height='150' width='150' id='icon-current'></canvas>");
+            //console.log(data);
+            var json = $.parseJSON(data);
+            var temp = Math.ceil(json["currently"].temperature);
+            var precip = Math.ceil(json["currently"]["precipProbability"] * 100);
+            var humidity = Math.ceil(json["currently"]["humidity"] * 100);
+            var wind = json["currently"]["windSpeed"];
+            var cloud = Math.ceil(json["currently"]["cloudCover"] * 100);
+            var icon = json["currently"]["icon"];
+            var des = json["currently"]["summary"];
+            console.log(icon);
+
+            var iconBg = getIconAndBackground(icon);
+            skycons.add("icon-current", iconBg.icon);
+            skycons.play();
+
+            $("#des-current").text(des);
+            $("#temp-current").text(temp);
+            $(".intro").css("background", "url(" + iconBg.bg + ") no-repeat bottom center scroll");
+            $("#wind-current").text(wind);
+            $("#humidity-current").text(humidity);
+            $("#cloud-current").text(cloud);
+            $("#precip-current").text(precip);
+            console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+        },
+        error: function (e) {
+            console.log("ERROR: " + e);
+        }
+    });
+}
+
 function addPlace(placeId) {
     $.ajax({
         url: "/api/Weather/GetPlaceDetail",
@@ -253,9 +292,11 @@ function addPlace(placeId) {
             var json = $.parseJSON(data);
             var lat = json['result']['geometry']['location']['lat'];
             var lng = json['result']['geometry']['location']['lng'];
-            addMarker(lat, lng);
-            getCurrentWeather(lat, lng);
-            getForecast(lat, lng);
+            //addMarker(lat, lng);
+            //getCurrentWeather(lat, lng);
+            //getForecast(lat, lng);
+            //console.log(lat + "/" + lng);
+            getWeather(lat, lng);
         }
     });
 }

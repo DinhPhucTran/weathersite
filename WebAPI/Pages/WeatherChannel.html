@@ -81,6 +81,39 @@
                         </div>
                         <!-- <h1 class="brand-heading"><canvas height="150" width="150" id="icon-current"></canvas><span style="display: inline-block; padding-bottom: -20px;">25&deg;</span></h1> -->
                         <p class="intro-text" id="des-current">------------</p>
+                        <div class="row">
+                            <div class="col-md-3 col-xs-6 bg-current-wrapper">
+                                <div class="bg-current">
+                                    <img src="/Content/images/icon/turbine.png" class="icon-current" />
+                                    <p class="index-current"><span id="wind-current">7.15</span><span class="unit-current"> km/h</span></p>
+                                    <p class="type-current">WIND</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xs-6 bg-current-wrapper">
+                                <div class="bg-current">
+                                    <img src="/Content/images/icon/humidity.png" class="icon-current" />
+                                    <p class="index-current"><span id="humidity-current">85</span><span class="unit-current"> %</span></p>
+                                    <p class="type-current">HUMIDITY</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 col-xs-6 bg-current-wrapper">
+                                <div class="bg-current">
+                                    <img src="/Content/images/icon/rain.png" class="icon-current" />
+                                    <p class="index-current"><span id="precip-current">50</span><span class="unit-current"> %</span></p>
+                                    <p class="type-current">PRECIPITATION</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xs-6 bg-current-wrapper">
+                                <div class="bg-current">
+                                    <img src="/Content/images/icon/cloud.png" class="icon-current" />
+                                    <p class="index-current"><span id="cloud-current">36</span><span class="unit-current"> %</span></p>
+                                    <p class="type-current">CLOUD COVER</p>
+                                </div>
+                            </div>
+                        </div>
                         <a href="#map-section" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
@@ -167,6 +200,6 @@
 
     <script src="/Scripts/Chart.js"></script>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgXEEd2QQBbpESV7DScrE_1DzObwWHhMo&callback=initMap"></script>
+    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgXEEd2QQBbpESV7DScrE_1DzObwWHhMo&callback=initMap"></script>-->
 </body>
 </html>

@@ -1,8 +1,4 @@
-/*!
- * Start Bootstrap - Grayscale v3.3.7+1 (http://startbootstrap.com/template-overviews/grayscale)
- * Copyright 2013-2016 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
- */
+
 body {
   width: 100%;
   height: 100%;
@@ -325,7 +321,31 @@ body {
     color: darkslategrey;
 }
 
-#map-section{
-   
+.icon-current{
+    width: 50px;  
 }
 
+.index-current{
+    margin-top: 5px; 
+    margin-bottom: -6px;
+    font-size: 25px;
+}
+
+.unit-current{
+    font-size: 20px;
+}
+
+.type-current{
+    font-size: 15px;
+    margin-bottom: 0px;
+    color: #d1d1d1;
+}
+
+.bg-current{
+    background-color: rgba(0, 0, 0, 0.15); 
+    padding-top: 10px;
+}
+
+.bg-current-wrapper{
+    padding: 3px;
+}
