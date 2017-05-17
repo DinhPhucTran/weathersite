@@ -43,31 +43,79 @@ $(document).ready(function () {
 
 var map;
 var markers = [];
-//function initMap() {
-//    var uit = { lat: 10.870288, lng: 106.8024038 };
-//    map = new google.maps.Map(document.getElementById('map'), {
-//        zoom: 4,
-//        center: uit
-//    });
-//}
+function initMap() {
+    var uit = { lat: 10.870288, lng: 106.8024038 };
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: uit
+    });
 
-//function setMapOnAll(map) {
-//    for (var i = 0; i < markers.length; i++) {
-//        markers[i].setMap(map);
-//    }
-//}
+    var tempMap = new google.maps.Map(document.getElementById('map-temp'), {
+        zoom: 4,
+        center: uit
+    });
 
-//function addMarker(lat, lng) {
-//    setMapOnAll(null);
-//    var pos = { lat: lat, lng: lng };
-//    var marker = new google.maps.Marker({
-//        position: pos,
-//        map: map
-//    });
-//    map.setZoom(8);
-//    map.setCenter(marker.getPosition());
-//    markers.push(marker);
-//}
+    var tempMapType = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+            return "http://tile.openweathermap.org/map/temp_new/" + zoom + "/" + coord.x + "/" + coord.y + ".png?appid=d3c3dd4211e267f7ebd3b9049496f813";
+        },
+        tileSize: new google.maps.Size(256, 256),
+        maxZoom: 9,
+        minZoom: 0,
+        name: 'tempMapType'
+    });
+    tempMap.overlayMapTypes.insertAt(0, tempMapType);
+
+    var cloudMap = new google.maps.Map(document.getElementById('map-cloud'), {
+        zoom: 4,
+        center: uit
+    });
+
+    var cloudMapType = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+            return "http://tile.openweathermap.org/map/clouds_new/" + zoom + "/" + coord.x + "/" + coord.y + ".png?appid=d3c3dd4211e267f7ebd3b9049496f813";
+        },
+        tileSize: new google.maps.Size(256, 256),
+        maxZoom: 9,
+        minZoom: 0,
+        name: 'cloudMapType'
+    });
+    cloudMap.overlayMapTypes.insertAt(0, cloudMapType);
+
+    var preciMap = new google.maps.Map(document.getElementById('map-preci'), {
+        zoom: 4,
+        center: uit
+    });
+
+    var preciMapType = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+            return "http://tile.openweathermap.org/map/precipitation_new/" + zoom + "/" + coord.x + "/" + coord.y + ".png?appid=d3c3dd4211e267f7ebd3b9049496f813";
+        },
+        tileSize: new google.maps.Size(256, 256),
+        maxZoom: 9,
+        minZoom: 0,
+        name: 'preciMapType'
+    });
+    preciMap.overlayMapTypes.insertAt(0, preciMapType);
+}
+
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+    }
+}
+
+function addMarker(lat, lng) {
+    setMapOnAll(null);
+    var pos = { lat: lat, lng: lng };
+    var marker = new google.maps.Marker({
+        position: pos,
+        map: map
+    });
+    map.setZoom(8);
+    map.setCenter(marker.getPosition());
+    markers.push(marker);
+}
 
 function isDayOrNight(hour) {
     if (hour >= 6 && hour <= 18)
@@ -123,7 +171,7 @@ function getIconAndBackground(code) {
     }
 
     if (code == "clear-night") {
-        return {icon: Skycons.CLEAR_NIGHT, bg: "/Contetn/images/background/clear-night.jpg"}
+        return {icon: Skycons.CLEAR_NIGHT, bg: "/Content/images/background/clear-night.jpg"}
     }
 
     if (code == "partly-cloudy-day") {
@@ -192,33 +240,74 @@ function drawChart(label, dt) {
     });
 }
 
-function getCurrentWeather(lat, lng) {
-    $.ajax({
-        url: "/api/Weather/GetCurrent",
-        dataType: "json",
-        data: "lat=" + lat + "&lng=" + lng,
-        success: function (data) {
-            $("#icon-wrapper").html("");
-            $("#icon-wrapper").html("<canvas height='150' width='150' id='icon-current'></canvas>");
-
-            var json = $.parseJSON(data);
-            var main = json["weather"][0].main;
-            var des = json["weather"][0].description;
-            var icon = json["weather"][0].icon;
-            var id = json["weather"][0].id;
-            var temp = Math.ceil(json["main"].temp - 273.15);
-            //console.log("Current weather - Main: " + main + ", Des: " + des + ", ID: " + id);
-
-            var iconBg = getIconAndBackground(id);
-            skycons.add("icon-current", iconBg.icon);
-            skycons.play();
-            $("#des-current").text(des);
-            $("#temp-current").text(temp);
-            $(".intro").css("background", "url(" + iconBg.bg + ") no-repeat bottom center scroll");
-            console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+function drawChartMutiLines(label, dt1, dt2) {
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: label,
+            datasets: [{
+                label: 'Min. Temperature',
+                data: dt1, pointHoverRadius: 5,
+                borderColor: [
+                    'rgba(17, 255, 0, 1)',
+                    'rgba(17, 255, 0, 1)',
+                    'rgba(17, 255, 0, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }, {
+                label: 'Max Temperature',
+                data: dt2,
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            hover: {
+                // Overrides the global setting
+                mode: 'index'
+            }
         }
     });
 }
+
+//function getCurrentWeather(lat, lng) {
+//    $.ajax({
+//        url: "/api/Weather/GetCurrent",
+//        dataType: "json",
+//        data: "lat=" + lat + "&lng=" + lng,
+//        success: function (data) {
+//            $("#icon-wrapper").html("");
+//            $("#icon-wrapper").html("<canvas height='150' width='150' id='icon-current'></canvas>");
+
+//            var json = $.parseJSON(data);
+//            var main = json["weather"][0].main;
+//            var des = json["weather"][0].description;
+//            var icon = json["weather"][0].icon;
+//            var id = json["weather"][0].id;
+//            var temp = Math.ceil(json["main"].temp - 273.15);
+//            //console.log("Current weather - Main: " + main + ", Des: " + des + ", ID: " + id);
+
+//            var iconBg = getIconAndBackground(id);
+//            skycons.add("icon-current", iconBg.icon);
+//            skycons.play();
+//            $("#des-current").text(des);
+//            $("#temp-current").text(temp);
+//            $(".intro").css("background", "url(" + iconBg.bg + ") no-repeat bottom center scroll");
+//            console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+//        }
+//    });
+//}
 
 function getForecast(lat, lng) {
     $.ajax({
@@ -262,7 +351,7 @@ function getWeather(lat, lng) {
             var cloud = Math.ceil(json["currently"]["cloudCover"] * 100);
             var icon = json["currently"]["icon"];
             var des = json["currently"]["summary"];
-            console.log(icon);
+            //console.log(icon);
 
             var iconBg = getIconAndBackground(icon);
             skycons.add("icon-current", iconBg.icon);
@@ -275,7 +364,23 @@ function getWeather(lat, lng) {
             $("#humidity-current").text(humidity);
             $("#cloud-current").text(cloud);
             $("#precip-current").text(precip);
-            console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+            //console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+
+            var label = [];
+            var dataMin = [];
+            var dataMax = [];
+
+            for (i = 0; i < 7; i++) {
+                var date = new Date(json["daily"]["data"][i].time * 1000);
+                var d = date.getDate();
+                var m = date.getMonth() + 1;
+                var y = date.getFullYear();
+                label.push(d + "/" + m + "/" + y);
+                dataMin.push(json["daily"]["data"][i].temperatureMin);
+                dataMax.push(json["daily"]["data"][i].temperatureMax);
+            }
+            console.log(label);
+            drawChartMutiLines(label, dataMin, dataMax);
         },
         error: function (e) {
             console.log("ERROR: " + e);
@@ -292,10 +397,10 @@ function addPlace(placeId) {
             var json = $.parseJSON(data);
             var lat = json['result']['geometry']['location']['lat'];
             var lng = json['result']['geometry']['location']['lng'];
-            //addMarker(lat, lng);
+            addMarker(lat, lng);
             //getCurrentWeather(lat, lng);
             //getForecast(lat, lng);
-            //console.log(lat + "/" + lng);
+            console.log(lat + "/" + lng);
             getWeather(lat, lng);
         }
     });

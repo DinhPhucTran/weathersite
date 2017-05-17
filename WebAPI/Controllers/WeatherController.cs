@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
             nfi.NumberDecimalSeparator = ".";
 
             string json = "[]";
-            string request = "https://api.darksky.net/forecast/" + Constants.DARK_SKY_API_KEY + "/" + lat.ToString(nfi) + "," + lng.ToString(nfi) + "?units=ca";
+            string request = "https://api.darksky.net/forecast/" + Constants.DARK_SKY_API_KEY + "/" + lat.ToString(nfi) + "," + lng.ToString(nfi) + "?units=ca&exclude=[minutely]";
             System.Diagnostics.Debug.WriteLine("Request: " + request);
             try
             {
