@@ -136,6 +136,7 @@ a:focus {
 }
 .intro .intro-body .intro-text {
   font-size: 18px;
+  margin-bottom: 10px;
 }
 @media (min-width: 768px) {
   .intro {
@@ -232,16 +233,13 @@ a:focus {
   height: 400px;
   margin-top: 100px;
 }
+
 @media (min-width: 767px) {
   .content-section {
     padding-top: 250px;
   }
   .download-section {
     padding: 100px 0;
-  }
-  #map {
-    height: 400px;
-    margin-top: 250px;
   }
 }
 .btn {
@@ -349,3 +347,17 @@ body {
 .bg-current-wrapper{
     padding: 3px;
 }
+
+#chart-section{
+    padding-top: 50px; 
+    padding-bottom: 50px;
+}
+
+#temp-chart{
+    height: 200px;
+}
+
+#map-section-2{
+    margin-top: 50px;
+}
+

@@ -121,5 +121,29 @@ namespace WebAPI.Controllers
 
             return json;
         }
+
+        [System.Web.Mvc.Route("api/Weather/GetPlaceName/lat/lng")]
+        [System.Web.Mvc.HttpGet]
+        public string GetPlaceName(float lat, float lng)
+        {
+            NumberFormatInfo nfi = new NumberFormatInfo();
+            nfi.NumberDecimalSeparator = ".";
+            string json = "[]";
+            try
+            {
+                using (var webClient = new System.Net.WebClient())
+                {
+                    webClient.Encoding = Encoding.UTF8;
+                    json = webClient.DownloadString("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat.ToString(nfi) + "," + lng.ToString(nfi));
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.Write("Failed to request: http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat.ToString(nfi) + "," + lng.ToString(nfi) + "\n");
+                System.Diagnostics.Debug.Write("ERROR: Get place failed - " + e.ToString());
+            }
+
+            return json;
+        }
     }
 }

@@ -38,20 +38,33 @@ $(document).ready(function () {
     $("#location").on("select2:select", function (e) {
         //console.log($("#location").val());        
         addPlace(($("#location").val()));
+        var place = $("#location").select2("data")[0].text;
+        console.log(place);
+        $("#location-current").text(place);
     });
+
+    navigator.geolocation.getCurrentPosition(function (location) {
+        //console.log(location);
+        var lat = location.coords.latitude;
+        var lng = location.coords.longitude;
+        addMarker(lat, lng);
+        getWeather(lat, lng);
+        getPlaceName(lat, lng);
+    });
+
+    //startTime();
 });
 
 var map;
 var markers = [];
+var preciMap;
+var cloudMap;
+
 function initMap() {
     var uit = { lat: 10.870288, lng: 106.8024038 };
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 4,
-        center: uit
-    });
-
-    var tempMap = new google.maps.Map(document.getElementById('map-temp'), {
-        zoom: 4,
+        scrollwheel:  false,
         center: uit
     });
 
@@ -64,10 +77,11 @@ function initMap() {
         minZoom: 0,
         name: 'tempMapType'
     });
-    tempMap.overlayMapTypes.insertAt(0, tempMapType);
+    map.overlayMapTypes.insertAt(0, tempMapType);
 
-    var cloudMap = new google.maps.Map(document.getElementById('map-cloud'), {
-        zoom: 4,
+    cloudMap = new google.maps.Map(document.getElementById('map-cloud'), {
+        zoom: 5,
+        scrollwheel: false,
         center: uit
     });
 
@@ -82,8 +96,9 @@ function initMap() {
     });
     cloudMap.overlayMapTypes.insertAt(0, cloudMapType);
 
-    var preciMap = new google.maps.Map(document.getElementById('map-preci'), {
+    preciMap = new google.maps.Map(document.getElementById('map-preci'), {
         zoom: 4,
+        scrollwheel: false,
         center: uit
     });
 
@@ -112,9 +127,21 @@ function addMarker(lat, lng) {
         position: pos,
         map: map
     });
-    map.setZoom(8);
+    map.setZoom(7);
     map.setCenter(marker.getPosition());
     markers.push(marker);
+
+    var marker2 = new google.maps.Marker({
+        position: pos,
+        map: preciMap
+    });
+    preciMap.setZoom(7);
+    preciMap.setCenter(marker2.getPosition());
+    markers.push(marker2);
+
+    cloudMap.setZoom(6);
+    cloudMap.setCenter(marker.getPosition());
+    cloudMap.setMapTypeId("satellite");
 }
 
 function isDayOrNight(hour) {
@@ -123,42 +150,42 @@ function isDayOrNight(hour) {
     return "night";
 }
 
-function getWeatherIcon(code) {
-    var isDay = true;
-    if (isDayOrNight((new Date()).getHours) == "day")
-        isDay = true;
-    else isDay = false;
-
-    if (code == 905) {
-        return Skycons.WIND;
-    }
-    if (code == 800) {
-        if (isDay == true)
-            return Skycons.CLEAR_DAY;
-        return Skycons.CLEAR_NIGHT;
-    }
-    if (code == 801 || code == 803) {
-        if (isDay == true)
-            return Skycons.PARTLY_CLOUDY_DAY;
-        else
-            return Skycons.PARTLY_CLOUDY_NIGHT;
-    }
-    if (code == 802) {
-        return Skycons.CLOUDY;
-    }
-    if (code == 701 || code == 741) {
-        return Skycons.FOG;
-    }
-    if (code >= 611 && code <= 622) {
-        return Skycons.SLEET;
-    }
-    if (code >= 600 && code <= 602) {
-        return Skycons.SNOW;
-    }
-    if (code >= 300 && code <= 531) {
-        return Skycons.RAIN;
-    }
-}
+//function getWeatherIcon(code) {
+//    var isDay = true;
+//    if (isDayOrNight((new Date()).getHours) == "day")
+//        isDay = true;
+//    else isDay = false;
+//
+//    if (code == 905) {
+//        return Skycons.WIND;
+//    }
+//    if (code == 800) {
+//        if (isDay == true)
+//            return Skycons.CLEAR_DAY;
+//        return Skycons.CLEAR_NIGHT;
+//    }
+//    if (code == 801 || code == 803) {
+//        if (isDay == true)
+//            return Skycons.PARTLY_CLOUDY_DAY;
+//        else
+//            return Skycons.PARTLY_CLOUDY_NIGHT;
+//    }
+//    if (code == 802) {
+//        return Skycons.CLOUDY;
+//    }
+//    if (code == 701 || code == 741) {
+//        return Skycons.FOG;
+//    }
+//    if (code >= 611 && code <= 622) {
+//        return Skycons.SLEET;
+//    }
+//    if (code >= 600 && code <= 602) {
+//        return Skycons.SNOW;
+//    }
+//    if (code >= 300 && code <= 531) {
+//        return Skycons.RAIN;
+//    }
+//}
 
 function getIconAndBackground(code) {
 
@@ -175,7 +202,7 @@ function getIconAndBackground(code) {
     }
 
     if (code == "partly-cloudy-day") {
-        return { icon: Skycons.PARTLY_CLOUDY_DAY, bg: "/Content/images/background/cloudy-day.jpg" };
+        return { icon: Skycons.PARTLY_CLOUDY_DAY, bg: "/Content/images/background/cloudy-day2.jpg" };
     }
 
     if (code == "partly-cloudy-night"){
@@ -183,7 +210,7 @@ function getIconAndBackground(code) {
     }
     
     if (code == "cloudy") {
-        return { icon: Skycons.CLOUDY, bg: "/Content/images/background/cloudy-day.jpg" };
+        return { icon: Skycons.CLOUDY, bg: "/Content/images/background/cloudy-day2.jpg" };
     }
 
     if (code == "fog") {
@@ -199,13 +226,13 @@ function getIconAndBackground(code) {
     }
 
     if (code == "rain") {
-        return { icon: Skycons.RAIN, bg: "/Content/images/background/rain.jpg" };
+        return { icon: Skycons.RAIN, bg: "/Content/images/background/rain2.jpg" };
     }
 }
 
 function drawChart(label, dt) {
-    var ctx = document.getElementById("myChart");
-    var myChart = new Chart(ctx, {
+    var ctx = document.getElementById("tempChart");
+    var tempChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: label,
@@ -241,42 +268,31 @@ function drawChart(label, dt) {
 }
 
 function drawChartMutiLines(label, dt1, dt2) {
-    var ctx = document.getElementById("myChart");
-    var myChart = new Chart(ctx, {
+    var ctx = document.getElementById("tempChart");
+    var tempChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: label,
             datasets: [{
                 label: 'Min. Temperature',
                 data: dt1, pointHoverRadius: 5,
-                borderColor: [
-                    'rgba(17, 255, 0, 1)',
-                    'rgba(17, 255, 0, 1)',
-                    'rgba(17, 255, 0, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+                borderColor: 'rgba(17, 255, 0, 1)',
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderWidth: 2
             }, {
                 label: 'Max Temperature',
                 data: dt2,
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+                borderColor: 'rgba(255, 154, 2, 1)',
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderWidth: 2
             }]
         },
         options: {
             hover: {
                 // Overrides the global setting
                 mode: 'index'
-            }
+            },
+            maintainAspectRatio: true
         }
     });
 }
@@ -289,7 +305,7 @@ function drawChartMutiLines(label, dt1, dt2) {
 //        success: function (data) {
 //            $("#icon-wrapper").html("");
 //            $("#icon-wrapper").html("<canvas height='150' width='150' id='icon-current'></canvas>");
-
+//
 //            var json = $.parseJSON(data);
 //            var main = json["weather"][0].main;
 //            var des = json["weather"][0].description;
@@ -297,7 +313,7 @@ function drawChartMutiLines(label, dt1, dt2) {
 //            var id = json["weather"][0].id;
 //            var temp = Math.ceil(json["main"].temp - 273.15);
 //            //console.log("Current weather - Main: " + main + ", Des: " + des + ", ID: " + id);
-
+//
 //            var iconBg = getIconAndBackground(id);
 //            skycons.add("icon-current", iconBg.icon);
 //            skycons.play();
@@ -308,31 +324,31 @@ function drawChartMutiLines(label, dt1, dt2) {
 //        }
 //    });
 //}
-
-function getForecast(lat, lng) {
-    $.ajax({
-        url: "/api/Weather/GetForecast",
-        dataType: "json",
-        data: "lat=" + lat + "&lng=" + lng,
-        success: function (data) {
-            //console.log(data);
-            var json = $.parseJSON(data);
-
-            var label = [];
-            var data = [];
-
-            for (i = 0; i < 9; i++) {
-                data.push(Math.ceil(json["list"][i]["main"].temp - 273.15))
-                label.push(json["list"][i].dt_txt);
-            }
-
-            drawChart(label, data);
-        },
-        error: function (e) {
-            console.log("ERROR: " + e);
-        }
-    });
-}
+//
+//function getForecast(lat, lng) {
+//    $.ajax({
+//        url: "/api/Weather/GetForecast",
+//        dataType: "json",
+//        data: "lat=" + lat + "&lng=" + lng,
+//        success: function (data) {
+//            //console.log(data);
+//            var json = $.parseJSON(data);
+//
+//            var label = [];
+//            var data = [];
+//
+//            for (i = 0; i < 9; i++) {
+//                data.push(Math.ceil(json["list"][i]["main"].temp - 273.15))
+//                label.push(json["list"][i].dt_txt);
+//            }
+//
+//            drawChart(label, data);
+//        },
+//        error: function (e) {
+//            console.log("ERROR: " + e);
+//        }
+//    });
+//}
 
 function getWeather(lat, lng) {
     $.ajax({
@@ -351,6 +367,7 @@ function getWeather(lat, lng) {
             var cloud = Math.ceil(json["currently"]["cloudCover"] * 100);
             var icon = json["currently"]["icon"];
             var des = json["currently"]["summary"];
+            var offset = json["offset"];
             //console.log(icon);
 
             var iconBg = getIconAndBackground(icon);
@@ -359,12 +376,13 @@ function getWeather(lat, lng) {
 
             $("#des-current").text(des);
             $("#temp-current").text(temp);
-            $(".intro").css("background", "url(" + iconBg.bg + ") no-repeat bottom center scroll");
+            $(".intro").attr("style", "background: url(" + iconBg.bg + ") no-repeat center center scroll; background-size: cover;");//.css("background", "url(" + iconBg.bg + ") no-repeat center center scroll");
             $("#wind-current").text(wind);
             $("#humidity-current").text(humidity);
             $("#cloud-current").text(cloud);
             $("#precip-current").text(precip);
-            //console.log("url(" + iconBg.bg + ") no-repeat bottom center scroll");
+            clearTimeout(timeOut);
+            startTimeByTimeZone(offset);
 
             var label = [];
             var dataMin = [];
@@ -379,7 +397,7 @@ function getWeather(lat, lng) {
                 dataMin.push(json["daily"]["data"][i].temperatureMin);
                 dataMax.push(json["daily"]["data"][i].temperatureMax);
             }
-            console.log(label);
+            //console.log(label);
             drawChartMutiLines(label, dataMin, dataMax);
         },
         error: function (e) {
@@ -397,11 +415,60 @@ function addPlace(placeId) {
             var json = $.parseJSON(data);
             var lat = json['result']['geometry']['location']['lat'];
             var lng = json['result']['geometry']['location']['lng'];
+            var name = json['result']['name'];
             addMarker(lat, lng);
-            //getCurrentWeather(lat, lng);
-            //getForecast(lat, lng);
-            console.log(lat + "/" + lng);
             getWeather(lat, lng);
         }
     });
+}
+
+function getPlaceName(lat, lng) {
+    $.ajax({
+        url: "/api/Weather/GetPlaceName",
+        dataType: "json",
+        data: "lat=" + lat + "&lng=" + lng,
+        success: function (data) {
+            //console.log(data);
+            var json = $.parseJSON(data);
+            var name = json["results"][1]["formatted_address"];
+            //console.log(name);
+            $("#location-current").text(name);
+        },
+        error: function (e) {
+            console.log("ERROR: " + e);
+        }
+    });
+}
+
+var timeOut;
+
+function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    var timeStr = h + ":" + m + ":" + s;
+    $("#time").text(timeStr);
+    timeOut = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+    return i;
+}
+
+function startTimeByTimeZone(offset) {
+    var d = new Date();
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    var nd = new Date(utc + (3600000 * offset));
+    console.log(nd);
+    var h = nd.getHours();
+    var m = nd.getMinutes();
+    var s = nd.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    var timeStr = h + ":" + m + ":" + s;
+    $("#time").text(nd.toLocaleTimeString());
+    timeOut = setTimeout("startTimeByTimeZone(" + offset + ")", 1000);
 }

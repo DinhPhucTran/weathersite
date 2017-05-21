@@ -54,7 +54,7 @@
                 </li>-->
             </ul>
             <div class="col-sm-3 col-md-3 pull-right">
-                <select id="location" style="width: 100%;" class="form-control"></select>
+                <select id="location" class="form-control"></select>
                 <!--<form class="navbar-form" role="search">
                     <div class="input-group">
                         <select id="location"></select>
@@ -68,15 +68,16 @@
     </nav>
     <!-- Intro Header -->
     <header class="intro">
-        <div class="intro-body parallax-bg" data-background-image="/Content/images/background/cloudy-day.jpg">
+        <div class="intro-body parallax-bg" data-background-image="/Content/images/background/cloudy-day2.jpg">
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <p class="intro-text" id="location-current"></p>
+                        <h3 id="time">18:08</h3>
                         <div style="text-align: center;">
-                            <div id="icon-wrapper"  style="display: inline-block;vertical-align:middle;">
+                            <div id="icon-wrapper" style="display: inline-block;vertical-align:middle;">
                                 <canvas height="150" width="150" id="icon-current"></canvas>
-                            </div>                            
+                            </div>
                             <h2 style="display: inline-block;font-size:100px; vertical-align:middle;"><span id="temp-current">--</span>&deg;</h2>
                         </div>
                         <!-- <h1 class="brand-heading"><canvas height="150" width="150" id="icon-current"></canvas><span style="display: inline-block; padding-bottom: -20px;">25&deg;</span></h1> -->
@@ -85,7 +86,7 @@
                             <div class="col-md-3 col-xs-6 bg-current-wrapper">
                                 <div class="bg-current">
                                     <img src="/Content/images/icon/turbine.png" class="icon-current" />
-                                    <p class="index-current"><span id="wind-current">7.15</span><span class="unit-current"> km/h</span></p>
+                                    <p class="index-current"><span id="wind-current">--</span><span class="unit-current"> km/h</span></p>
                                     <p class="type-current">WIND</p>
                                 </div>
                             </div>
@@ -93,15 +94,15 @@
                             <div class="col-md-3 col-xs-6 bg-current-wrapper">
                                 <div class="bg-current">
                                     <img src="/Content/images/icon/humidity.png" class="icon-current" />
-                                    <p class="index-current"><span id="humidity-current">85</span><span class="unit-current"> %</span></p>
+                                    <p class="index-current"><span id="humidity-current">--</span><span class="unit-current"> %</span></p>
                                     <p class="type-current">HUMIDITY</p>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-3 col-xs-6 bg-current-wrapper">
                                 <div class="bg-current">
                                     <img src="/Content/images/icon/rain.png" class="icon-current" />
-                                    <p class="index-current"><span id="precip-current">50</span><span class="unit-current"> %</span></p>
+                                    <p class="index-current"><span id="precip-current">--</span><span class="unit-current"> %</span></p>
                                     <p class="type-current">PRECIPITATION</p>
                                 </div>
                             </div>
@@ -109,12 +110,12 @@
                             <div class="col-md-3 col-xs-6 bg-current-wrapper">
                                 <div class="bg-current">
                                     <img src="/Content/images/icon/cloud.png" class="icon-current" />
-                                    <p class="index-current"><span id="cloud-current">36</span><span class="unit-current"> %</span></p>
+                                    <p class="index-current"><span id="cloud-current">--</span><span class="unit-current"> %</span></p>
                                     <p class="type-current">CLOUD COVER</p>
                                 </div>
                             </div>
                         </div>
-                        <a href="#map-section" class="btn btn-circle page-scroll">
+                        <a href="#chart-section" class="btn btn-circle page-scroll" style="margin-top: 20px;">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
                     </div>
@@ -123,41 +124,41 @@
         </div>
     </header>
     <!-- About Section -->
-    <section id="map-section" class="container"  style="padding-left: 0px; margin-left: 0px; margin-right: 0px; padding-right: 0px;"> 
+    <section id="chart-section" class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8" style="float: none; margin: 0 auto;">
+                <canvas id="tempChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section id="map-section" class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 style="float: none; margin: 0 auto; color: dimgray;">Temperature</h4>
                 <div id="map" style="margin-top: 0px;" class="map"></div>
             </div>
-
-            <div class="col-md-6" style="margin-top: 40px; padding-left: 20px;">
-                <canvas id="myChart"></canvas>
-            </div>
         </div>
     </section>
 
-    <section id="map-section" class="container" style="padding-left: 0px; margin-left: 0px; margin-right: 0px; padding-right: 0px;">
+    <section id="map-section-2" class="container">
         <div class="row">
-            <div class="col-md-6">
-                <div id="map-temp" style="margin-top: 20px;" class="map"></div>
-            </div>
-
-            <div class="col-md-6" style="padding-left: 20px;">
-                <div id="map-cloud" style="margin-top: 20px;" class="map"></div>
+            <div class="col-md-12">
+                <h4 style="float: none; margin: 0 auto; color: dimgray;">Precipitation</h4>
+                <div id="map-preci" style="margin-top: 0px;" class="map"></div>
             </div>
         </div>
     </section>
 
-    <section id="map-section" class="container" style="padding-left: 0px; margin-left: 0px; margin-right: 0px; padding-right: 0px;">
+    <section id="map-section-3" class="container" style="margin-top: 50px;">
         <div class="row">
-            <div class="col-md-6">
-                <div id="map-preci" style="margin-top: 20px;" class="map"></div>
-            </div>
-
-            <div class="col-md-6" style="padding-left: 20px;">
-                
+            <div class="col-md-12">
+                <h4 style="float: none; margin: 0 auto; color: dimgray;">Clouds</h4>
+                <div id="map-cloud" style="margin-top: 0px;" class="map"></div>
             </div>
         </div>
     </section>
+
     <!-- Download Section -->
     <!--<section id="download" class="content-section text-center">
         <div class="download-section">
@@ -170,7 +171,6 @@
             </div>
         </div>
     </section>-->
-
     <!-- Footer -->
     <footer>
         <div class="container text-center">
